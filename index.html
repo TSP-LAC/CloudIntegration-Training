@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HXM Practice — Curso</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1e222b;
+      --text: #e7eaf0;
+      --muted: #9aa3b2;
+      --accent: #4f8cff;
+      --border: #2a2f3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 64px 20px 96px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    header .kicker {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    header h1 {
+      font-size: 34px;
+      margin: 10px 0 6px;
+    }
+
+    header p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .modules {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 20px 22px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform .15s, border-color .15s, background .15s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: var(--panel-2);
+    }
+
+    .card .num {
+      flex: 0 0 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--accent);
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .card .body { flex: 1 1 auto; min-width: 0; }
+
+    .card .title {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0 0 3px;
+    }
+
+    .card .meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .card .arrow {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 22px;
+      transition: transform .15s, color .15s;
+    }
+
+    .card:hover .arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    /* ---------- Estado "visto" (discreto) ---------- */
+    .card .check {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      display: none;
+      color: #4caf7d;
+      font-size: 15px;
+    }
+
+    .card.done { opacity: .62; }
+    .card.done:hover { opacity: 1; }
+    .card.done .num {
+      color: var(--muted);
+    }
+    .card.done .check { display: block; }
+    .card.done .arrow { display: none; }
+
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="kicker">HXM Practice</div>
+      <h1>Curso em PDF</h1>
+      <p>Clique num módulo para abrir o material numa nova aba.</p>
+    </header>
+
+    <div class="modules" id="modules"></div>
+
+    <footer>
+      Os PDFs abrem no SharePoint — é preciso estar logado na conta thesiliconpartner.
+    </footer>
+  </div>
+
+  <script>
+    // Renomeie os títulos à vontade.
+    const modules = [
+      { title: "Módulo 1", share: "IQDo-5J-f4yfTJjFetsTk3omAV1VxDZALj_KjThVUwb6RYs", e: "cI2qQU" },
+      { title: "Módulo 2", share: "IQBct_7HQLDtS6T2gz4DkkV9AWEhelioX0VVOM0HA-jJtzU", e: "wn6ibX" },
+      { title: "Módulo 3", share: "IQCaerGtW4HxRI9DF-UGtUMoAfMW0CZy0H6XbC0Ov1cfcNg", e: "pVhrmc" },
+      { title: "Módulo 4", share: "IQAxT0-O1AOKS7WHUETodMM4AasmnQKTj8gd5AAkBCp8n1s", e: "cYjKiZ" },
+      { title: "Módulo 5", share: "IQDMrSZWdegEQb9YxlCethqLAemOZnCMv_P3lXWGar-Gm9A", e: "0vf95Z" },
+      { title: "Módulo 6", share: "IQCiPPlKpaCAQ48_T_MSZSg9AYVDyExzK3OqUXa2pYHPxZk", e: "np64a5" },
+    ];
+
+    const pdfUrl = (m) =>
+      `https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/${m.share}?e=${m.e}`;
+
+    const STORAGE_KEY = "hxm-course-done";
+    const loadDone = () => {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+      catch { return {}; }
+    };
+    const saveDone = (d) => localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+
+    const done = loadDone();
+    const container = document.getElementById("modules");
+
+    modules.forEach((m, i) => {
+      const a = document.createElement("a");
+      a.className = "card" + (done[m.share] ? " done" : "");
+      a.href = pdfUrl(m);
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.innerHTML = `
+        <div class="num">${i + 1}</div>
+        <div class="body">
+          <p class="title">${m.title}</p>
+          <p class="meta">Documento PDF · SharePoint</p>
+        </div>
+        <div class="check">✓</div>
+        <div class="arrow">→</div>
+      `;
+      // Ao clicar, marca como visto
+      a.addEventListener("click", () => {
+        done[m.share] = true;
+        saveDone(done);
+        a.classList.add("done");
+      });
+      container.appendChild(a);
+    });
+  </script>
+</body>
+</html>
