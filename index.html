@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudIntegration Practice — Curso</title>
+  <title>CloudIntegration Practice — Course</title>
   <style>
     :root {
       --bg: #0f1115;
@@ -149,26 +149,26 @@
   <div class="wrap">
     <header>
       <div class="kicker">CloudIntegration Practice</div>
-      <h1>Curso em PDF</h1>
-      <p>Clique num módulo para abrir o material numa nova aba.</p>
+      <h1>PDF Course</h1>
+      <p>Click a module to open the material in a new tab.</p>
     </header>
 
     <div class="modules" id="modules"></div>
 
     <footer>
-      Os PDFs abrem no SharePoint — é preciso estar logado na conta thesiliconpartner.
+      The PDFs open in SharePoint — you must be signed in to your TSP account.
     </footer>
   </div>
 
   <script>
-    // Renomeie os títulos à vontade.
+    // Rename the titles as you like.
     const modules = [
-      { title: "Módulo 1", share: "IQDo-5J-f4yfTJjFetsTk3omAV1VxDZALj_KjThVUwb6RYs", e: "cI2qQU" },
-      { title: "Módulo 2", share: "IQBct_7HQLDtS6T2gz4DkkV9AWEhelioX0VVOM0HA-jJtzU", e: "wn6ibX" },
-      { title: "Módulo 3", share: "IQCaerGtW4HxRI9DF-UGtUMoAfMW0CZy0H6XbC0Ov1cfcNg", e: "pVhrmc" },
-      { title: "Módulo 4", share: "IQAxT0-O1AOKS7WHUETodMM4AasmnQKTj8gd5AAkBCp8n1s", e: "cYjKiZ" },
-      { title: "Módulo 5", share: "IQDMrSZWdegEQb9YxlCethqLAemOZnCMv_P3lXWGar-Gm9A", e: "0vf95Z" },
-      { title: "Módulo 6", share: "IQCiPPlKpaCAQ48_T_MSZSg9AYVDyExzK3OqUXa2pYHPxZk", e: "np64a5" },
+      { title: "Module 1", share: "IQDo-5J-f4yfTJjFetsTk3omAV1VxDZALj_KjThVUwb6RYs", e: "cI2qQU" },
+      { title: "Module 2", share: "IQBct_7HQLDtS6T2gz4DkkV9AWEhelioX0VVOM0HA-jJtzU", e: "wn6ibX" },
+      { title: "Module 3", share: "IQCaerGtW4HxRI9DF-UGtUMoAfMW0CZy0H6XbC0Ov1cfcNg", e: "pVhrmc" },
+      { title: "Module 4", share: "IQAxT0-O1AOKS7WHUETodMM4AasmnQKTj8gd5AAkBCp8n1s", e: "cYjKiZ" },
+      { title: "Module 5", share: "IQDMrSZWdegEQb9YxlCethqLAemOZnCMv_P3lXWGar-Gm9A", e: "0vf95Z" },
+      { title: "Module 6", share: "IQCiPPlKpaCAQ48_T_MSZSg9AYVDyExzK3OqUXa2pYHPxZk", e: "np64a5" },
     ];
 
     const pdfUrl = (m) =>
@@ -194,12 +194,12 @@
         <div class="num">${i + 1}</div>
         <div class="body">
           <p class="title">${m.title}</p>
-          <p class="meta">Documento PDF · SharePoint</p>
+          <p class="meta">PDF Document · SharePoint</p>
         </div>
         <div class="check">✓</div>
         <div class="arrow">→</div>
       `;
-      // Ao clicar, marca como visto
+      // On click, mark as viewed
       a.addEventListener("click", () => {
         done[m.share] = true;
         saveDone(done);
