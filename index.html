@@ -161,14 +161,14 @@
   </div>
 
   <script>
-    // Rename the titles as you like.
+    // Rename the titles/descriptions as you like.
     const modules = [
-      { title: "Module 1", share: "IQDo-5J-f4yfTJjFetsTk3omAV1VxDZALj_KjThVUwb6RYs", e: "cI2qQU" },
-      { title: "Module 2", share: "IQBct_7HQLDtS6T2gz4DkkV9AWEhelioX0VVOM0HA-jJtzU", e: "wn6ibX" },
-      { title: "Module 3", share: "IQCaerGtW4HxRI9DF-UGtUMoAfMW0CZy0H6XbC0Ov1cfcNg", e: "pVhrmc" },
-      { title: "Module 4", share: "IQAxT0-O1AOKS7WHUETodMM4AasmnQKTj8gd5AAkBCp8n1s", e: "cYjKiZ" },
-      { title: "Module 5", share: "IQDMrSZWdegEQb9YxlCethqLAemOZnCMv_P3lXWGar-Gm9A", e: "0vf95Z" },
-      { title: "Module 6", share: "IQCiPPlKpaCAQ48_T_MSZSg9AYVDyExzK3OqUXa2pYHPxZk", e: "np64a5" },
+      { title: "Lesson 1", desc: "Integration Fundamentals and APIs", share: "IQDo-5J-f4yfTJjFetsTk3omAV1VxDZALj_KjThVUwb6RYs", e: "cI2qQU" },
+      { title: "Lesson 2", desc: "OData and the SAP World",          share: "IQBct_7HQLDtS6T2gz4DkkV9AWEhelioX0VVOM0HA-jJtzU", e: "wn6ibX" },
+      { title: "Lesson 3", desc: "Introduction to SAP BTP",          share: "IQCaerGtW4HxRI9DF-UGtUMoAfMW0CZy0H6XbC0Ov1cfcNg", e: "pVhrmc" },
+      { title: "Lesson 4", desc: "First iFlow with an Open API",     share: "IQAxT0-O1AOKS7WHUETodMM4AasmnQKTj8gd5AAkBCp8n1s", e: "cYjKiZ" },
+      { title: "Lesson 5", desc: "Connecting to SAP SuccessFactors", share: "IQDMrSZWdegEQb9YxlCethqLAemOZnCMv_P3lXWGar-Gm9A", e: "0vf95Z" },
+      { title: "Lesson 6", desc: "Best Practices and Final Project", share: "IQCiPPlKpaCAQ48_T_MSZSg9AYVDyExzK3OqUXa2pYHPxZk", e: "np64a5" },
     ];
 
     const pdfUrl = (m) =>
@@ -194,7 +194,7 @@
         <div class="num">${i + 1}</div>
         <div class="body">
           <p class="title">${m.title}</p>
-          <p class="meta">PDF Document · SharePoint</p>
+          <p class="meta">${m.desc}</p>
         </div>
         <div class="check">✓</div>
         <div class="arrow">→</div>
