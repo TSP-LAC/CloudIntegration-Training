@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HXM Practice — Curso</title>
+  <title>CloudIntegration Practice — Curso</title>
   <style>
     :root {
       --bg: #0f1115;
@@ -148,7 +148,7 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="kicker">HXM Practice</div>
+      <div class="kicker">CloudIntegration Practice</div>
       <h1>Curso em PDF</h1>
       <p>Clique num módulo para abrir o material numa nova aba.</p>
     </header>
@@ -174,7 +174,7 @@
     const pdfUrl = (m) =>
       `https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/${m.share}?e=${m.e}`;
 
-    const STORAGE_KEY = "hxm-course-done";
+    const STORAGE_KEY = "cloudintegration-course-done";
     const loadDone = () => {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
       catch { return {}; }
