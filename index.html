@@ -186,19 +186,6 @@
   </div>
 
   <script>
-    // Rename the titles/descriptions as you like.
-    const modules = [
-      { title: "Lesson 1", desc: "Integration Fundamentals and APIs", share: "IQDo-5J-f4yfTJjFetsTk3omAV1VxDZALj_KjThVUwb6RYs", e: "cI2qQU" },
-      { title: "Lesson 2", desc: "OData and the SAP World",          share: "IQBct_7HQLDtS6T2gz4DkkV9AWEhelioX0VVOM0HA-jJtzU", e: "wn6ibX" },
-      { title: "Lesson 3", desc: "Introduction to SAP BTP",          share: "IQCaerGtW4HxRI9DF-UGtUMoAfMW0CZy0H6XbC0Ov1cfcNg", e: "pVhrmc" },
-      { title: "Lesson 4", desc: "First iFlow with an Open API",     share: "IQAxT0-O1AOKS7WHUETodMM4AasmnQKTj8gd5AAkBCp8n1s", e: "cYjKiZ" },
-      { title: "Lesson 5", desc: "Connecting to SAP SuccessFactors", share: "IQDMrSZWdegEQb9YxlCethqLAemOZnCMv_P3lXWGar-Gm9A", e: "0vf95Z" },
-      { title: "Lesson 6", desc: "Best Practices and Final Project", share: "IQCiPPlKpaCAQ48_T_MSZSg9AYVDyExzK3OqUXa2pYHPxZk", e: "np64a5" },
-    ];
-
-    const pdfUrl = (m) =>
-      `https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/${m.share}?e=${m.e}`;
-
     const STORAGE_KEY = "cloudintegration-course-done";
     const loadDone = () => {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -206,17 +193,28 @@
     };
     const saveDone = (d) => localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
 
-    const done = loadDone();
     const container = document.getElementById("modules");
 
-    modules.forEach((m, i) => {
+    function buildCard(m, index, done) {
       const a = document.createElement("a");
-      a.className = "card" + (done[m.share] ? " done" : "");
-      a.href = pdfUrl(m);
-      a.target = "_blank";
-      a.rel = "noopener";
+      const hasUrl = !!m.url;
+      a.className = "card" + (done[m.url] ? " done" : "");
+      a.href = hasUrl ? m.url : "#";
+      if (hasUrl) {
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.addEventListener("click", () => {
+          done[m.url] = true;
+          saveDone(done);
+          a.classList.add("done");
+        });
+      } else {
+        a.style.opacity = "0.45";
+        a.style.cursor = "not-allowed";
+        a.addEventListener("click", (e) => e.preventDefault());
+      }
       a.innerHTML = `
-        <div class="num">${i + 1}</div>
+        <div class="num">${index + 1}</div>
         <div class="body">
           <p class="title">${m.title}</p>
           <p class="meta">${m.desc}</p>
@@ -224,14 +222,29 @@
         <div class="check">✓</div>
         <div class="arrow">→</div>
       `;
-      // On click, mark as viewed
-      a.addEventListener("click", () => {
-        done[m.share] = true;
-        saveDone(done);
-        a.classList.add("done");
+      return a;
+    }
+
+    // Cache-bust once per day so browsers pick up fresh links.json after a workflow run
+    const cacheBuster = new Date().toISOString().slice(0, 10);
+    container.innerHTML =
+      '<p style="color:var(--muted);text-align:center;padding:32px 0">Loading…</p>';
+
+    fetch("links.json?v=" + cacheBuster)
+      .then((r) => {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then((modules) => {
+        const done = loadDone();
+        container.innerHTML = "";
+        modules.forEach((m, i) => container.appendChild(buildCard(m, i, done)));
+      })
+      .catch((err) => {
+        console.error("Failed to load links.json:", err);
+        container.innerHTML =
+          '<p style="color:#e74c3c;text-align:center;padding:32px 0">Falha ao carregar os módulos. Tente novamente.</p>';
       });
-      container.appendChild(a);
-    });
   </script>
 </body>
 </html>

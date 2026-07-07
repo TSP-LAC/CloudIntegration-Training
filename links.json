@@ -1,0 +1,38 @@
+[
+  {
+    "lesson": 1,
+    "title": "Lesson 1",
+    "desc": "Integration Fundamentals and APIs",
+    "url": "https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/IQDo-5J-f4yfTJjFetsTk3omAV1VxDZALj_KjThVUwb6RYs?e=cI2qQU"
+  },
+  {
+    "lesson": 2,
+    "title": "Lesson 2",
+    "desc": "OData and the SAP World",
+    "url": "https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/IQBct_7HQLDtS6T2gz4DkkV9AWEhelioX0VVOM0HA-jJtzU?e=wn6ibX"
+  },
+  {
+    "lesson": 3,
+    "title": "Lesson 3",
+    "desc": "Introduction to SAP BTP",
+    "url": "https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/IQCaerGtW4HxRI9DF-UGtUMoAfMW0CZy0H6XbC0Ov1cfcNg?e=pVhrmc"
+  },
+  {
+    "lesson": 4,
+    "title": "Lesson 4",
+    "desc": "First iFlow with an Open API",
+    "url": "https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/IQAxT0-O1AOKS7WHUETodMM4AasmnQKTj8gd5AAkBCp8n1s?e=cYjKiZ"
+  },
+  {
+    "lesson": 5,
+    "title": "Lesson 5",
+    "desc": "Connecting to SAP SuccessFactors",
+    "url": "https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/IQDMrSZWdegEQb9YxlCethqLAemOZnCMv_P3lXWGar-Gm9A?e=0vf95Z"
+  },
+  {
+    "lesson": 6,
+    "title": "Lesson 6",
+    "desc": "Best Practices and Final Project",
+    "url": "https://thesiliconpartner.sharepoint.com/:b:/s/hxmpractice/IQCiPPlKpaCAQ48_T_MSZSg9AYVDyExzK3OqUXa2pYHPxZk?e=np64a5"
+  }
+]
