@@ -191,8 +191,6 @@
     .btn-signin:hover { background: var(--accent); color: #081427; }
   </style>
 
-  <!-- MSAL Browser v2 — official Microsoft CDN (UMD build, expõe window.msal) -->
-  <script src="https://alcdn.msauth.net/browser/2.28.3/js/msal-browser.min.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -211,22 +209,12 @@
   </div>
 
   <script>
-    // ── MSAL / Graph configuration ───────────────────────────────────────────
-    const MSAL_CFG = {
-      auth: {
-        clientId:    "d2d97c73-1026-4f40-80bb-bf209e06a8b1",
-        authority:   "https://login.microsoftonline.com/0595e5dd-a0e5-42ea-b599-809bd9dd6869",
-        redirectUri: "https://tsp-lac.github.io/CloudIntegration-Training/",
-      },
-      cache: { cacheLocation: "localStorage", storeAuthStateInCookie: false },
-    };
-
-    // Delegated scope — user signs in with their own TSP account
-    const SCOPES = ["https://graph.microsoft.com/Files.Read.All"];
-
-    // SharePoint site where the lesson PDFs live (from the original sharing URLs)
-    const SP_SITE_PATH = "thesiliconpartner.sharepoint.com:/sites/hxmpractice:";
-    const GRAPH = "https://graph.microsoft.com/v1.0";
+    // URL base da pasta no SharePoint — estável enquanto os arquivos mantiverem
+    // o mesmo nome e localização. Troque o PDF na pasta: a URL não muda.
+    const BASE =
+      "https://thesiliconpartner.sharepoint.com/sites/hxmpractice/Shared%20Documents" +
+      "/REPOSITORY/TECHNOLOGY%20LEADERSHIP/TSP%20LAC%20Development%20Team" +
+      "/Training/SAP%20Cloud%20Integration%20-%20Learning%20Journey/EN/PDFs/";
 
     const LESSONS = [
       { lesson: 1, title: "Lesson 1", desc: "Integration Fundamentals and APIs",  filename: "Lesson 1 - Integration Fundamentals and APIs.pdf" },
@@ -237,118 +225,28 @@
       { lesson: 6, title: "Lesson 6", desc: "Best Practices and Final Project",   filename: "Lesson 6 - Best Practices and Final Project.pdf" },
     ];
 
-    // ── DOM helpers ───────────────────────────────────────────────────────────
     const STORAGE_KEY = "cloudintegration-course-done";
     const loadDone = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } };
     const saveDone = (d) => localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
 
     const container = document.getElementById("modules");
-    const setMsg = (html) => { container.innerHTML = html; };
+    const done = loadDone();
 
-    function buildCard(m, index, done) {
-      const a = document.createElement("a");
-      const hasUrl = !!m.url;
-      a.className = "card" + (done[m.url] ? " done" : "");
-      a.href = hasUrl ? m.url : "#";
-      if (hasUrl) {
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.addEventListener("click", () => { done[m.url] = true; saveDone(done); a.classList.add("done"); });
-      } else {
-        a.style.opacity = "0.45";
-        a.style.cursor  = "not-allowed";
-        a.addEventListener("click", (e) => e.preventDefault());
-      }
+    LESSONS.forEach((l, i) => {
+      const url = BASE + encodeURIComponent(l.filename);
+      const a   = document.createElement("a");
+      a.className = "card" + (done[url] ? " done" : "");
+      a.href      = url;
+      a.target    = "_blank";
+      a.rel       = "noopener";
       a.innerHTML = `
-        <div class="num">${index + 1}</div>
-        <div class="body"><p class="title">${m.title}</p><p class="meta">${m.desc}</p></div>
+        <div class="num">${i + 1}</div>
+        <div class="body"><p class="title">${l.title}</p><p class="meta">${l.desc}</p></div>
         <div class="check">✓</div>
         <div class="arrow">→</div>`;
-      return a;
-    }
-
-    function renderModules(modules) {
-      const done = loadDone();
-      container.innerHTML = "";
-      modules.forEach((m, i) => container.appendChild(buildCard(m, i, done)));
-    }
-
-    function showSignIn(msalApp) {
-      setMsg(`
-        <div class="signin-wrap">
-          <p>Faça login com sua conta TSP para acessar os materiais.</p>
-          <button class="btn-signin" id="btn-signin">
-            <svg width="18" height="18" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1"  y="1"  width="9" height="9" fill="#F25022"/>
-              <rect x="11" y="1"  width="9" height="9" fill="#7FBA00"/>
-              <rect x="1"  y="11" width="9" height="9" fill="#00A4EF"/>
-              <rect x="11" y="11" width="9" height="9" fill="#FFB900"/>
-            </svg>
-            Entrar com Microsoft
-          </button>
-        </div>`);
-      document.getElementById("btn-signin").addEventListener("click", () =>
-        msalApp.loginRedirect({ scopes: SCOPES }));
-    }
-
-    // ── Graph API: list all files in the site drive matching 'Lesson' ─────────
-    async function fetchLessonLinks(token) {
-      // Search within the hxmpractice site drive — returns all items whose name
-      // contains 'Lesson', then we match by exact filename.
-      const url =
-        `${GRAPH}/sites/${SP_SITE_PATH}/drive/root/search(q='Lesson')` +
-        `?$select=name,webUrl&$top=50`;
-
-      const resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-      if (!resp.ok) {
-        const body = await resp.text();
-        throw new Error(`Graph ${resp.status}: ${body.slice(0, 300)}`);
-      }
-      const data = await resp.json();
-
-      // Build filename → webUrl map
-      const fileMap = {};
-      for (const item of (data.value || [])) fileMap[item.name] = item.webUrl;
-
-      return LESSONS.map(l => ({ ...l, url: fileMap[l.filename] || "" }));
-    }
-
-    // ── Bootstrap ─────────────────────────────────────────────────────────────
-    async function init() {
-      const msalApp = new msal.PublicClientApplication(MSAL_CFG);
-
-      setMsg('<p style="color:var(--muted);text-align:center;padding:32px 0">Carregando…</p>');
-
-      // Capture token from redirect (if we're returning from loginRedirect)
-      let token = null;
-      try {
-        const redirectResp = await msalApp.handleRedirectPromise();
-        if (redirectResp) token = redirectResp.accessToken;
-      } catch (e) { console.warn("handleRedirectPromise:", e); }
-
-      // Try silent acquisition if not from redirect
-      if (!token) {
-        const accounts = msalApp.getAllAccounts();
-        if (accounts.length > 0) {
-          try {
-            const silent = await msalApp.acquireTokenSilent({ scopes: SCOPES, account: accounts[0] });
-            token = silent.accessToken;
-          } catch (e) { console.warn("Silent token failed:", e); }
-        }
-      }
-
-      if (!token) { showSignIn(msalApp); return; }
-
-      try {
-        const modules = await fetchLessonLinks(token);
-        renderModules(modules);
-      } catch (err) {
-        console.error(err);
-        setMsg(`<p style="color:#e74c3c;text-align:center;padding:32px 0">Erro ao buscar arquivos do SharePoint.<br><small style="color:var(--muted)">${err.message}</small></p>`);
-      }
-    }
-
-    init().catch(console.error);
+      a.addEventListener("click", () => { done[url] = true; saveDone(done); a.classList.add("done"); });
+      container.appendChild(a);
+    });
   </script>
 </body>
 </html>
